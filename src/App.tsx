@@ -1,9 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { APITester } from "./APITester";
-import "./index.css";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import logo from "./logo.svg";
-import reactLogo from "./react.svg";
+import { APITester } from './APITester';
+
+import logo from './logo.svg';
+import reactLogo from './react.svg';
+
+import './index.css';
 
 export function App() {
   return (

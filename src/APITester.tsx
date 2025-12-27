@@ -1,9 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useRef, type FormEvent } from "react";
+import { type FormEvent, useRef } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export function APITester() {
   const responseInputRef = useRef<HTMLTextAreaElement>(null);
@@ -14,9 +15,9 @@ export function APITester() {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
-      const endpoint = formData.get("endpoint") as string;
+      const endpoint = formData.get('endpoint') as string;
       const url = new URL(endpoint, location.href);
-      const method = formData.get("method") as string;
+      const method = formData.get('method') as string;
       const res = await fetch(url, { method });
 
       const data = await res.json();
