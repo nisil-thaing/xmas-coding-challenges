@@ -5,8 +5,18 @@
     @apply font-sans;
   }
 
+  html,
+  body,
+  #root {
+    @apply min-h-screen w-full;
+  }
+
   body {
-    @apply grid place-items-center min-w-[320px] min-h-screen relative m-0 bg-background text-foreground;
+    @apply relative m-0 min-w-[320px] bg-background text-foreground;
+  }
+
+  #root {
+    @apply flex flex-col;
   }
 }
 

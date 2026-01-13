@@ -1,16 +1,26 @@
+import { createMemoryRouter } from 'react-router-dom';
+
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, mock } from 'bun:test';
+
+import { RootLayout } from '@/components/RootLayout';
 
 import App from './App';
 
-describe('App', () => {
-  it('Should match snapshot', () => {
-    const { container } = render(<App />);
-    expect(container.innerHTML).toMatchSnapshot();
-  });
+mock.module('@/pages', () => ({
+  routerConfigs: createMemoryRouter([
+    {
+      path: '/',
+      element: <RootLayout />,
+    },
+  ]),
+}));
 
-  it('Should render the logos', () => {
+describe('App', () => {
+  it('Should render MainHeader and RootLayout', () => {
     render(<App />);
-    expect(screen.getByRole('img', { name: 'Bun Logo' })).toBeInTheDocument();
+
+    expect(screen.getByRole('banner')).toBeInTheDocument();
+    expect(screen.getByRole('main')).toBeInTheDocument();
   });
 });
