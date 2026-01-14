@@ -1,44 +1,44 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it } from 'bun:test';
 
-import { renderTestWithRoutersWrapper } from '@/lib/testing-library';
+import { renderTestWithAllProviders } from '@/lib/testing-library';
 
 import { LoginPage } from './LoginPage';
 
 describe('LoginPage', () => {
   it('should match snapshot', () => {
-    const { container } = renderTestWithRoutersWrapper(<LoginPage />);
+    const { container } = renderTestWithAllProviders(<LoginPage />);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render the logo and title', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     expect(screen.getByText('Xmas App')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Sign in to your account' })).toBeInTheDocument();
   });
 
   it('should render sign up link', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     expect(screen.getByRole('link', { name: 'Sign up' })).toHaveAttribute('href', '/register');
   });
 
   it('should render email and password inputs', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     expect(screen.getByLabelText('Email address')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
   });
 
   it('should render the sign in button', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
   });
 
   it('should update email input value', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     const emailInput = screen.getByLabelText('Email address');
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
@@ -46,7 +46,7 @@ describe('LoginPage', () => {
   });
 
   it('should update password input value', () => {
-    renderTestWithRoutersWrapper(<LoginPage />);
+    renderTestWithAllProviders(<LoginPage />);
 
     const passwordInput = screen.getByLabelText('Password');
     fireEvent.change(passwordInput, { target: { value: 'password123' } });

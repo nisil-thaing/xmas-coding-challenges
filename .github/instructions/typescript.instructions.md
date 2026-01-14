@@ -35,19 +35,21 @@ Imports are auto-sorted via `@trivago/prettier-plugin-sort-imports` with blank l
 2. Third-party modules
 3. `@/types/*`
 4. `@/constants/*`
-5. `@/services/*`
-6. `@/store/*`
-7. `@/lib/*` (third-party library utilities and wrappers)
-8. `@/components/*`
-9. `@/views/*`
-10. `@/mocks/*`
-11. Relative imports (non-assets)
-12. Image assets (`.png`, `.jpg`, `.jpeg`, `.svg`, `.gif`, `.webp`)
-13. CSS files (`.css`)
+5. `@/hooks/*`
+6. `@/services/*`
+7. `@/store/*`
+8. `@/lib/*` (third-party library utilities and wrappers)
+9. `@/components/*`
+10. `@/pages/*`
+11. `@/mocks/*`
+12. Relative imports (non-assets)
+13. Image assets (`.png`, `.jpg`, `.jpeg`, `.svg`, `.gif`, `.webp`)
+14. CSS files (`.css`)
 
 ```tsx
 import { useState } from 'react';
 
+import { useLogin } from '@/hooks/useAuthServices';
 import { z } from 'zod';
 
 import { GENERAL_REGEX } from '@/constants/validation';
@@ -93,5 +95,79 @@ interface MyComponentProps {
 
 export const MyComponent: FC<MyComponentProps> = ({ title, isActive = false }) => {
   return <div className={cn('base-class', isActive && 'active-class')}>{title}</div>;
+};
+```
+
+# Data Fetching
+
+Use Axios with TanStack React Query for API calls:
+
+```tsx
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+import axiosInstance from '@/lib/axios';
+
+// Query example
+const { data, isLoading } = useQuery({
+  queryKey: ['users'],
+  queryFn: () => axiosInstance.get('/users').then(res => res.data),
+});
+
+// Mutation example
+const { mutateAsync, isPending } = useMutation({
+  mutationFn: (data: CreateUserRequest) => axiosInstance.post('/users', data),
+});
+```
+
+# Custom Hooks
+
+Place custom hooks in `src/hooks/`. Group related hooks by domain (e.g., `useAuthServices.ts` for auth hooks):
+
+```tsx
+import { useNavigate } from 'react-router-dom';
+
+import { useMutation } from '@tanstack/react-query';
+
+import type { LoginRequest, LoginResponse } from '@/services/authService';
+import { authService } from '@/services/authService';
+
+export const useLogin = () => {
+  const navigate = useNavigate();
+
+  const { mutateAsync, isPending, isSuccess, error, data, reset } = useMutation<LoginResponse, Error, LoginRequest>({
+    mutationFn: authService.login,
+    onSuccess: () => {
+      navigate('/');
+    },
+  });
+
+  const login = async (credentials: LoginRequest) => {
+    reset();
+    return mutateAsync(credentials);
+  };
+
+  return { login, isLoading: isPending, isSuccess, error, data };
+};
+```
+
+# Services
+
+Place API services in `src/services/`. Define request/response types alongside service methods:
+
+```tsx
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+export const authService = {
+  login: (credentials: LoginRequest): Promise<LoginResponse> => {
+    return axiosInstance.post('/auth/login', credentials).then(res => res.data);
+  },
 };
 ```

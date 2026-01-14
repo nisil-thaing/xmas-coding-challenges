@@ -25,9 +25,13 @@ src/
 ├── components/      # Shared components
 │   └── ui/          # shadcn/ui components (button, card, input, etc.)
 ├── constants/       # Application constants (validation regex, etc.)
+├── hooks/           # Custom React hooks
+│   └── useAuthServices.ts  # Authentication hooks (useLogin, etc.)
 ├── lib/             # Third-party library utilities and wrappers
+│   ├── axios.ts     # Axios HTTP client instance
+│   ├── react-query.ts      # TanStack Query client configuration
 │   ├── tailwind.ts  # Tailwind CSS utilities (cn for class merging)
-│   └── testing-library.tsx  # Testing utilities (router wrappers, etc.)
+│   └── testing-library.tsx # Testing utilities (provider wrappers)
 ├── mocks/           # Mock data for development/testing
 ├── pages/           # Page components with routing config
 │   ├── DashboardPage/
@@ -36,7 +40,7 @@ src/
 │   └── index.tsx    # Router configuration
 ├── services/        # API services and external integrations
 ├── types/           # TypeScript type definitions
-├── App.tsx          # Main React app component with routing
+├── App.tsx          # Main React app component with providers
 ├── frontend.tsx     # React entry point
 ├── index.ts         # Bun server entry point
 ├── index.html       # HTML template

@@ -20,7 +20,7 @@ export default {
     '^@/store(.*)$',
     '^@/lib(.*)$',
     '^@/components(.*)$',
-    '^@/views(.*)$',
+    '^@/pages(.*)$',
 
     '^@/mocks(.*)$',
 

@@ -1,13 +1,12 @@
 import type { FC } from 'react';
-import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
+import { useLogin } from '@/hooks/useAuthServices';
 import { Layers } from 'lucide-react';
 import { z } from 'zod';
 
 import { GENERAL_REGEX } from '@/constants/validation';
-
-import { authService } from '@/services/authService';
 
 import { Form } from '@/components/Form';
 import type { FormRef } from '@/components/Form';
@@ -29,23 +28,14 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage: FC = () => {
-  const navigate = useNavigate();
   const formRef = useRef<FormRef<LoginFormData>>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { login, isLoading, error } = useLogin();
 
   const handleSubmit = async (data: LoginFormData) => {
-    setError(null);
-    setIsLoading(true);
-
     try {
-      await authService.login(data);
-      navigate('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      await login(data);
+    } catch {
       formRef.current?.reset({ email: data.email, password: '' });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -69,7 +59,7 @@ export const LoginPage: FC = () => {
             &nbsp;for a free trial.
           </p>
 
-          {error && <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+          {error && <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">{error.message}</div>}
 
           <Form<LoginFormData>
             ref={formRef}

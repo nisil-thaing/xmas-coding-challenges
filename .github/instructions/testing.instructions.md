@@ -22,19 +22,25 @@ Test files: `*.spec.ts` or `*.spec.tsx` in `src/`
 
 # Testing Utilities
 
-Use `renderTestWithRoutersWrapper` from `@/lib/testing-library` for components that use react-router-dom (Link, Outlet, useNavigate, etc.):
+Use render wrappers from `@/lib/testing-library` based on what providers your component needs:
+
+| Wrapper                            | Provides                           | Use when                                              |
+| ---------------------------------- | ---------------------------------- | ----------------------------------------------------- |
+| `renderTestWithRoutersWrapper`     | MemoryRouter                       | Component uses react-router (Link, useNavigate, etc.) |
+| `renderTestWithQueryClientWrapper` | QueryClientProvider                | Component uses react-query (useQuery, useMutation)    |
+| `renderTestWithAllProviders`       | QueryClientProvider + MemoryRouter | Component uses both react-router and react-query      |
 
 ```tsx
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'bun:test';
 
-import { renderTestWithRoutersWrapper } from '@/lib/testing-library';
+import { renderTestWithAllProviders } from '@/lib/testing-library';
 
 import { MyComponent } from './MyComponent';
 
 describe('MyComponent', () => {
   it('Should render navigation links', () => {
-    renderTestWithRoutersWrapper(<MyComponent />);
+    renderTestWithAllProviders(<MyComponent />);
 
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
   });
