@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 
 import { Layers } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/tailwind';
 
 import { Button } from '@/components/ui/button';
 

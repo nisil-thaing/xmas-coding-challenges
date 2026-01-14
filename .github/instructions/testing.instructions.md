@@ -22,13 +22,13 @@ Test files: `*.spec.ts` or `*.spec.tsx` in `src/`
 
 # Testing Utilities
 
-Use `renderTestWithRoutersWrapper` from `@/utils/testing-library` for components that use react-router-dom (Link, Outlet, useNavigate, etc.):
+Use `renderTestWithRoutersWrapper` from `@/lib/testing-library` for components that use react-router-dom (Link, Outlet, useNavigate, etc.):
 
 ```tsx
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'bun:test';
 
-import { renderTestWithRoutersWrapper } from '@/utils/testing-library';
+import { renderTestWithRoutersWrapper } from '@/lib/testing-library';
 
 import { MyComponent } from './MyComponent';
 

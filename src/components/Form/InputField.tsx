@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useController, useFormContext } from 'react-hook-form';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/tailwind';
 
 import { Input } from '@/components/ui/input';
 

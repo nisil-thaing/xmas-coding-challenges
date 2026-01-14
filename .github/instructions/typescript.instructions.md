@@ -36,15 +36,14 @@ Imports are auto-sorted via `@trivago/prettier-plugin-sort-imports` with blank l
 3. `@/types/*`
 4. `@/constants/*`
 5. `@/services/*`
-6. `@/utils/*`
-7. `@/store/*`
-8. `@/lib/*`
-9. `@/components/*`
-10. `@/views/*`
-11. `@/mocks/*`
-12. Relative imports (non-assets)
-13. Image assets (`.png`, `.jpg`, `.jpeg`, `.svg`, `.gif`, `.webp`)
-14. CSS files (`.css`)
+6. `@/store/*`
+7. `@/lib/*` (third-party library utilities and wrappers)
+8. `@/components/*`
+9. `@/views/*`
+10. `@/mocks/*`
+11. Relative imports (non-assets)
+12. Image assets (`.png`, `.jpg`, `.jpeg`, `.svg`, `.gif`, `.webp`)
+13. CSS files (`.css`)
 
 ```tsx
 import { useState } from 'react';
@@ -54,6 +53,8 @@ import { z } from 'zod';
 import { GENERAL_REGEX } from '@/constants/validation';
 
 import { authService } from '@/services/authService';
+
+import { cn } from '@/lib/tailwind';
 
 import { Form } from '@/components/Form';
 

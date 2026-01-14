@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { describe, expect, it } from 'bun:test';
 
-import { renderTestWithRoutersWrapper } from '@/utils/testing-library';
+import { renderTestWithRoutersWrapper } from '@/lib/testing-library';
 
 import { LoginPage } from './LoginPage';
 

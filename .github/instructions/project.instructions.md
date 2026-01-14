@@ -24,12 +24,17 @@ Use Bun instead of Node.js for all operations:
 src/
 ├── components/      # Shared components
 │   └── ui/          # shadcn/ui components (button, card, input, etc.)
+├── constants/       # Application constants (validation regex, etc.)
+├── lib/             # Third-party library utilities and wrappers
+│   ├── tailwind.ts  # Tailwind CSS utilities (cn for class merging)
+│   └── testing-library.tsx  # Testing utilities (router wrappers, etc.)
+├── mocks/           # Mock data for development/testing
 ├── pages/           # Page components with routing config
 │   ├── DashboardPage/
 │   ├── LoginPage/
 │   ├── NotFoundPage/
 │   └── index.tsx    # Router configuration
-├── lib/utils.ts     # Utility functions (cn for class merging)
+├── services/        # API services and external integrations
 ├── types/           # TypeScript type definitions
 ├── App.tsx          # Main React app component with routing
 ├── frontend.tsx     # React entry point
@@ -44,7 +49,7 @@ e2e/                 # Playwright E2E tests
 Use `@/*` for imports from `src/`:
 
 ```ts
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/tailwind';
 
 import { Button } from '@/components/ui/button';
 ```

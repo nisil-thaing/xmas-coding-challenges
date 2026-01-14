@@ -8,10 +8,10 @@ description: 'Tailwind CSS and shadcn/ui conventions'
 
 - **Tailwind CSS v4** with `bun-plugin-tailwind`
 - **shadcn/ui** components in `src/components/ui/`
-- Use `cn()` from `@/lib/utils` for conditional class merging:
+- Use `cn()` from `@/lib/tailwind` for conditional class merging:
 
 ```tsx
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/tailwind';
 
 <div className={cn('base-class', isActive && 'active-class')} />;
 ```
