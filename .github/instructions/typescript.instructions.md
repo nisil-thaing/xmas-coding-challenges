@@ -4,12 +4,66 @@ name: 'TypeScript & React'
 description: 'Code style and component conventions for TypeScript and React files'
 ---
 
-# Code Style
+# Code Style (Prettier Config)
 
-- **Single quotes** for strings
-- **Semicolons** required
-- **120 character** line width
-- **Auto-sorted imports** (React first, then third-party, then local)
+Strictly follow these Prettier rules:
+
+- **Single quotes** for strings (`singleQuote: true`)
+- **Semicolons** required (`semi: true`)
+- **Trailing commas** everywhere (`trailingComma: 'all'`)
+- **120 character** line width (`printWidth: 120`)
+- **2 spaces** for indentation (`tabWidth: 2`)
+- **Avoid parentheses** around single arrow function parameters (`arrowParens: 'avoid'`)
+
+```ts
+// Good
+const fn = x => x * 2;
+const obj = { a: 1, b: 2, };
+const arr = [1, 2, 3,];
+
+// Bad
+const fn = (x) => x * 2;
+const obj = { a: 1, b: 2 };
+const arr = [1, 2, 3];
+```
+
+# Import Order
+
+Imports are auto-sorted via `@trivago/prettier-plugin-sort-imports` with blank line separation:
+
+1. React imports (`react`, `react-dom`, etc.)
+2. Third-party modules
+3. `@/types/*`
+4. `@/constants/*`
+5. `@/services/*`
+6. `@/utils/*`
+7. `@/store/*`
+8. `@/lib/*`
+9. `@/components/*`
+10. `@/views/*`
+11. `@/mocks/*`
+12. Relative imports (non-assets)
+13. Image assets (`.png`, `.jpg`, `.jpeg`, `.svg`, `.gif`, `.webp`)
+14. CSS files (`.css`)
+
+```tsx
+import { useState } from 'react';
+
+import { z } from 'zod';
+
+import { GENERAL_REGEX } from '@/constants/validation';
+
+import { authService } from '@/services/authService';
+
+import { Form } from '@/components/Form';
+
+import { VALIDATION_MESSAGES } from './LoginPage.constants';
+
+import './styles.css';
+```
+
+# Additional Rules
+
 - Prefix unused variables with `_`
 - Use `Array<type>` instead of `type[]` for array types
 - Use HTML entities for spaces in JSX, not `{' '}`:

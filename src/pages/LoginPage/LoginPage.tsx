@@ -1,36 +1,67 @@
-import type { FC, FormEvent } from 'react';
-import { useState } from 'react';
+import type { FC } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { Layers } from 'lucide-react';
+import { z } from 'zod';
+
+import { GENERAL_REGEX } from '@/constants/validation';
+
+import { authService } from '@/services/authService';
+
+import { Form } from '@/components/Form';
+import type { FormRef } from '@/components/Form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+import { VALIDATION_MESSAGES } from './LoginPage.constants';
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, VALIDATION_MESSAGES.email.required)
+    .regex(GENERAL_REGEX.EMAIL, VALIDATION_MESSAGES.email.invalid),
+  password: z
+    .string()
+    .min(1, VALIDATION_MESSAGES.password.required)
+    .regex(GENERAL_REGEX.USER_PASSWORD, VALIDATION_MESSAGES.password.invalid),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage: FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const formRef = useRef<FormRef<LoginFormData>>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    navigate('/');
+  const handleSubmit = async (data: LoginFormData) => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await authService.login(data);
+      navigate('/');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+      formRef.current?.reset({ email: data.email, password: '' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex flex-1">
-      <div className="flex flex-col justify-center w-full px-4 py-12 sm:px-6 lg:w-1/2 lg:px-20 xl:px-24">
-        <div className="w-full max-w-sm mx-auto">
+      <div className="flex w-full flex-col justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm">
           <Link to="/" className="inline-flex items-center gap-2">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600">
-              <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">
+              <Layers className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-semibold text-slate-900">Xmas App</span>
           </Link>
 
-          <h2 className="text-2xl font-semibold mt-8 text-slate-900">Sign in to your account</h2>
-          <p className="text-sm mt-2 text-slate-600">
+          <h2 className="mt-8 text-2xl font-semibold text-slate-900">Sign in to your account</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Don&apos;t have an account?&nbsp;
             <Link to="/register" className="font-medium text-blue-600 hover:underline">
               Sign up
@@ -38,41 +69,39 @@ export const LoginPage: FC = () => {
             &nbsp;for a free trial.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6 mt-10">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
-                Email address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+          {error && <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+          <Form<LoginFormData>
+            ref={formRef}
+            schema={loginSchema}
+            defaultValues={{ email: '', password: '' }}
+            onSubmit={handleSubmit}
+            className="mt-10 space-y-6"
+          >
+            <Form.Input<LoginFormData>
+              name="email"
+              label="Email address"
+              type="email"
+              autoComplete="email"
+              className="[&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
 
-            <Button type="submit" className="text-base font-medium h-11 w-full bg-blue-600 hover:bg-blue-500">
-              Sign in <span aria-hidden="true">&rarr;</span>
+            <Form.Input<LoginFormData>
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              className="[&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="h-11 w-full bg-blue-600 text-base font-medium hover:bg-blue-500"
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'} <span aria-hidden="true">&rarr;</span>
             </Button>
-          </form>
+          </Form>
         </div>
       </div>
 

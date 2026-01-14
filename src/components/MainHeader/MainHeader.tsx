@@ -1,6 +1,8 @@
 import type { FC } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
+import { Layers } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -12,9 +14,7 @@ export const MainHeader: FC = () => {
         <div className="flex items-center gap-x-12">
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600">
-              <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
+              <Layers className="h-4 w-4 text-white" />
             </div>
             <span className="text-lg font-semibold text-slate-900">Xmas App</span>
           </Link>

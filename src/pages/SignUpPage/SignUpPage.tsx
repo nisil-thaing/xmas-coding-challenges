@@ -2,6 +2,8 @@ import type { FC, FormEvent } from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { Layers } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,10 +25,8 @@ export const SignUpPage: FC = () => {
       <div className="flex flex-col justify-center w-full px-4 py-12 sm:px-6 lg:w-1/2 lg:px-20 xl:px-24">
         <div className="w-full max-w-sm mx-auto">
           <Link to="/" className="inline-flex items-center gap-2">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600">
-              <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">
+              <Layers className="h-5 w-5 text-white" />
             </div>
             <span className="text-xl font-semibold text-slate-900">Xmas App</span>
           </Link>

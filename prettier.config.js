@@ -14,8 +14,9 @@ export default {
     '<THIRD_PARTY_MODULES>',
 
     '^@/types(.*)$',
-    '^@/utils(.*)$',
     '^@/constants(.*)$',
+    '^@/services(.*)$',
+    '^@/utils(.*)$',
     '^@/store(.*)$',
     '^@/lib(.*)$',
     '^@/components(.*)$',
