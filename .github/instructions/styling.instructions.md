@@ -38,3 +38,14 @@ Example:
 ```tsx
 <div className="flex text-sm font-medium items-center justify-between h-11 w-full px-4 py-2 mt-4 rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-500" />
 ```
+
+# Icons
+
+- Use **lucide-react** for all icons in components
+- Import icons individually to enable tree-shaking:
+
+```tsx
+import { ArrowRight, Layers, User } from 'lucide-react';
+
+<ArrowRight className="h-4 w-4" />;
+```

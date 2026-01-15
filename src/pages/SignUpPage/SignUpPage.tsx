@@ -1,29 +1,52 @@
-import type { FC, FormEvent } from 'react';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import type { FC } from 'react';
+import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
-import { Layers } from 'lucide-react';
+import { useSignUp } from '@/hooks/useAuthServices';
+import { ArrowRight, Layers } from 'lucide-react';
+import { z } from 'zod';
 
+import { GENERAL_REGEX } from '@/constants/validation';
+
+import { Form } from '@/components/Form';
+import type { FormRef } from '@/components/Form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+import { VALIDATION_MESSAGES } from './SignUpPage.constants';
+
+const signUpSchema = z.object({
+  firstName: z.string().min(1, VALIDATION_MESSAGES.firstName.required),
+  lastName: z.string().min(1, VALIDATION_MESSAGES.lastName.required),
+  email: z
+    .string()
+    .min(1, VALIDATION_MESSAGES.email.required)
+    .regex(GENERAL_REGEX.EMAIL, VALIDATION_MESSAGES.email.invalid),
+  password: z
+    .string()
+    .min(1, VALIDATION_MESSAGES.password.required)
+    .regex(GENERAL_REGEX.USER_PASSWORD, VALIDATION_MESSAGES.password.invalid),
+});
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
+
+const DEFAULT_FORM_VALUES: SignUpFormData = { firstName: '', lastName: '', email: '', password: '' };
 
 export const SignUpPage: FC = () => {
-  const navigate = useNavigate();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const formRef = useRef<FormRef<SignUpFormData>>(null);
+  const { signUp, isLoading, error } = useSignUp();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    navigate('/');
+  const handleSubmit = async (data: SignUpFormData) => {
+    try {
+      await signUp(data);
+    } catch {
+      formRef.current?.reset({ ...data, password: '' });
+    }
   };
 
   return (
     <div className="flex flex-1">
-      <div className="flex flex-col justify-center w-full px-4 py-12 sm:px-6 lg:w-1/2 lg:px-20 xl:px-24">
-        <div className="w-full max-w-sm mx-auto">
+      <div className="flex w-full flex-col justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm">
           <Link to="/" className="inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600">
               <Layers className="h-5 w-5 text-white" />
@@ -31,8 +54,8 @@ export const SignUpPage: FC = () => {
             <span className="text-xl font-semibold text-slate-900">Xmas App</span>
           </Link>
 
-          <h2 className="text-2xl font-semibold mt-8 text-slate-900">Get started for free</h2>
-          <p className="text-sm mt-2 text-slate-600">
+          <h2 className="mt-8 text-2xl font-semibold text-slate-900">Get started for free</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Already registered?&nbsp;
             <Link to="/login" className="font-medium text-blue-600 hover:underline">
               Sign in
@@ -40,73 +63,57 @@ export const SignUpPage: FC = () => {
             &nbsp;to your account.
           </p>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 mt-10">
-            <div className="space-y-2">
-              <Label htmlFor="firstName" className="text-sm font-medium text-slate-700">
-                First name
-              </Label>
-              <Input
-                id="firstName"
-                type="text"
-                autoComplete="given-name"
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+          {error && <div className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">{error.message}</div>}
 
-            <div className="space-y-2">
-              <Label htmlFor="lastName" className="text-sm font-medium text-slate-700">
-                Last name
-              </Label>
-              <Input
-                id="lastName"
-                type="text"
-                autoComplete="family-name"
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+          <Form<SignUpFormData>
+            ref={formRef}
+            schema={signUpSchema}
+            defaultValues={DEFAULT_FORM_VALUES}
+            onSubmit={handleSubmit}
+            className="mt-10 grid grid-cols-2 gap-6"
+          >
+            <Form.Input<SignUpFormData>
+              name="firstName"
+              label="First name"
+              type="text"
+              autoComplete="given-name"
+              className="[&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
 
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">
-                Email address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+            <Form.Input<SignUpFormData>
+              name="lastName"
+              label="Last name"
+              type="text"
+              autoComplete="family-name"
+              className="[&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
 
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-slate-700">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                className="h-11 border-slate-300 bg-white focus:border-blue-600 focus:ring-blue-600"
-              />
-            </div>
+            <Form.Input<SignUpFormData>
+              name="email"
+              label="Email address"
+              type="email"
+              autoComplete="email"
+              className="col-span-2 [&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
+
+            <Form.Input<SignUpFormData>
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="new-password"
+              className="col-span-2 [&_input]:h-11 [&_input]:border-slate-300 [&_input]:bg-white [&_input]:focus:border-blue-600 [&_input]:focus:ring-blue-600"
+            />
 
             <div className="col-span-2">
-              <Button type="submit" className="text-base font-medium h-11 w-full bg-blue-600 hover:bg-blue-500">
-                Sign up <span aria-hidden="true">&rarr;</span>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="h-11 w-full bg-blue-600 text-base font-medium hover:bg-blue-500"
+              >
+                {isLoading ? 'Signing up...' : 'Sign up'} <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
-          </form>
+          </Form>
         </div>
       </div>
 

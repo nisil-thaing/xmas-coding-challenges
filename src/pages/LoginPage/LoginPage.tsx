@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useLogin } from '@/hooks/useAuthServices';
-import { Layers } from 'lucide-react';
+import { ArrowRight, Layers } from 'lucide-react';
 import { z } from 'zod';
 
 import { GENERAL_REGEX } from '@/constants/validation';
@@ -26,6 +26,8 @@ const loginSchema = z.object({
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
+
+const DEFAULT_FORM_VALUES: LoginFormData = { email: '', password: '' };
 
 export const LoginPage: FC = () => {
   const formRef = useRef<FormRef<LoginFormData>>(null);
@@ -64,7 +66,7 @@ export const LoginPage: FC = () => {
           <Form<LoginFormData>
             ref={formRef}
             schema={loginSchema}
-            defaultValues={{ email: '', password: '' }}
+            defaultValues={DEFAULT_FORM_VALUES}
             onSubmit={handleSubmit}
             className="mt-10 space-y-6"
           >
@@ -89,7 +91,7 @@ export const LoginPage: FC = () => {
               disabled={isLoading}
               className="h-11 w-full bg-blue-600 text-base font-medium hover:bg-blue-500"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'} <span aria-hidden="true">&rarr;</span>
+              {isLoading ? 'Signing in...' : 'Sign in'} <ArrowRight className="h-4 w-4" />
             </Button>
           </Form>
         </div>
